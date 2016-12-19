@@ -1,0 +1,59 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List 
+    	java.util.Map		
+	" 
+%>
+<% 
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();
+    boolean readFromFile = "true".equals(ElementParameterParser.getValue(node, "__READ_FROM_FILE__"));
+    String file = ElementParameterParser.getValue(node, "__SCRIPT_FILE__");
+    String sqlScript = ElementParameterParser.getValue(node, "__SQL_SCRIPT__");
+    if (sqlScript != null) {
+    	sqlScript = sqlScript.trim().replace('\r', ' ').replace("\n", "\\n\" +\n\"");
+    }
+    String charset = ElementParameterParser.getValue(node, "__FILE_ENCODING__");
+    if (charset == null || charset.isEmpty()) {
+    	charset = "null";
+    }
+    String removeComments = ElementParameterParser.getValue(node, "__REMOVE_COMMENTS__");
+    boolean detectBlocks = "true".equals(ElementParameterParser.getValue(node, "__USE_SCRIPT_DETECTING__"));
+%>
+	de.cimt.talendcomp.dbtools.parser.SQLParser <%=cid%> = new de.cimt.talendcomp.dbtools.parser.SQLParser();
+	<%=cid%>.setIncludeComments(!<%=removeComments%>);
+	<%=cid%>.setUseScriptDetecting(<%=detectBlocks%>);
+	try {
+<%  if (readFromFile) { %>
+	// read the script from file
+	java.io.File scriptfile_<%=cid%> = new java.io.File(<%=file%>);
+	String sqlscript_<%=cid%> = de.cimt.talendcomp.dbtools.parser.SQLParser.readSQLFile(scriptfile_<%=cid%>, <%=charset%>);
+	// parse script
+	<%=cid%>.parseScript(sqlscript_<%=cid%>);
+<%  } else { %>
+	// parse script of the given SQL text field
+	<%=cid%>.parseScript(<%=sqlScript%>);
+<%  } %>
+	} catch (Exception e) {
+		globalMap.put("<%=cid%>_ERROR_MESSAGE", e.getMessage());
+		throw e;
+	}
+	int count_<%=cid%> = <%=cid%>.getStatementCount();
+	globalMap.put("<%=cid%>_STATEMENT_COUNT", count_<%=cid%>);
+	for (int i_<%=cid%> = 0; i_<%=cid%> < count_<%=cid%>; i_<%=cid%>++) {
+		globalMap.put("<%=cid%>_STATEMENT_INDEX", i_<%=cid%>);
+		globalMap.put("<%=cid%>_STATEMENT_SQL", <%=cid%>.getStatementSQLAt(i_<%=cid%>));
+		globalMap.put("<%=cid%>_STATEMENT_TYPE", <%=cid%>.getStatementTypeAt(i_<%=cid%>));
+		
+	
+	
