@@ -1,17 +1,15 @@
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import de.cimt.talendcomp.dbtools.parser.SQLParser;
 import de.cimt.talendcomp.dbtools.parser.SQLStatement;
 
 
-public class Test {
+public class TestParser {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		Test test = new Test();
-		test.testBackslashIsNotEscape();
-	}
-
+	@Test
 	public void testOracleScript() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("-- line comment 1\n");
@@ -57,8 +55,10 @@ public class Test {
 			System.out.println("-------------------");
 			System.out.println(s.getSQL());
 		}
+		assertTrue(true);
 	}
 	
+	@Test
 	public void testBackslashIsNotEscape() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE b17_core.title\n");
@@ -99,7 +99,24 @@ public class Test {
 			System.out.println("-- #############");
 			System.out.println(s.getSQL());
 		}
-		
+		assertTrue(true);
+	}
+	
+	@Test
+	public void testSemikolonInSQL() {
+		String actual = null; 
+		String expected = "SELECT log:host::string FROM log_table";
+		SQLParser p = new SQLParser();
+		p.setIncludeComments(true);
+		p.setUseScriptDetecting(true);
+		p.setDetectBindVariables(false);
+		p.parseScript(expected);
+		for (SQLStatement s : p.getStatements()) {
+			System.out.println("-- #############");
+			System.out.println(s.getSQL());
+			actual = s.getSQL();
+		}
+		assertEquals("Parser result wrong", expected, actual);
 	}
 	
 }

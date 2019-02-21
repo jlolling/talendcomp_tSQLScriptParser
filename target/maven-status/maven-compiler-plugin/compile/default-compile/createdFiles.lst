@@ -1,5 +1,5 @@
 de/cimt/talendcomp/dbtools/parser/SQLStatement.class
 de/cimt/talendcomp/dbtools/parser/URLElement.class
 de/cimt/talendcomp/dbtools/parser/SQLPSParam.class
-de/cimt/talendcomp/dbtools/parser/SQLParser.class
 de/cimt/talendcomp/dbtools/parser/StringReplacer.class
+de/cimt/talendcomp/dbtools/parser/SQLParser.class

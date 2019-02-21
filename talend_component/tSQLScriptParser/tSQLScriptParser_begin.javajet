@@ -29,10 +29,12 @@
     }
     String removeComments = ElementParameterParser.getValue(node, "__REMOVE_COMMENTS__");
     boolean detectBlocks = "true".equals(ElementParameterParser.getValue(node, "__USE_SCRIPT_DETECTING__"));
+    boolean detectBindVars = "true".equals(ElementParameterParser.getValue(node, "__DETECTING_BIND_VARIABLES__"));
 %>
 	de.cimt.talendcomp.dbtools.parser.SQLParser <%=cid%> = new de.cimt.talendcomp.dbtools.parser.SQLParser();
 	<%=cid%>.setIncludeComments(!<%=removeComments%>);
 	<%=cid%>.setUseScriptDetecting(<%=detectBlocks%>);
+	<%=cid%>.setDetectBindVariables(<%=detectBindVars%>);
 	try {
 <%  if (readFromFile) { %>
 	// read the script from file

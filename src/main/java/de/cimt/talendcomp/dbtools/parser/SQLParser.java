@@ -35,6 +35,7 @@ public final class SQLParser {
     private boolean         isPLSQL         = false;
     private boolean         autoDetectPLSQL = true;
     private boolean         includeComments = true;
+    private boolean 		detectBindVariables = true;
     static int maxTextStringLength = 0;
     private static final char STATEMENT_END = ';';
     private char statementEnd = STATEMENT_END;
@@ -227,7 +228,7 @@ public final class SQLParser {
                             } else {
                                 if (c == '?') {
                                     isPreparedStatement = true;
-                                } else if (c0 != ':' && c == ':' && Character.isLetter(c1)) {
+                                } else if (detectBindVariables && (c0 != ':' && c == ':' && Character.isLetter(c1))) {
                                 	isPreparedStatement = true;
                                 	hasNamedParams = true;
                                 }
@@ -1321,6 +1322,14 @@ public final class SQLParser {
 
 	public void setUseScriptDetecting(boolean useScriptDetecting) {
 		this.useScriptDetecting = useScriptDetecting;
+	}
+
+	public boolean isDetectBindVariables() {
+		return detectBindVariables;
+	}
+
+	public void setDetectBindVariables(boolean detectBindVariables) {
+		this.detectBindVariables = detectBindVariables;
 	}
 
 }
