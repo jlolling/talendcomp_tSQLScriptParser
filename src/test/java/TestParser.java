@@ -1,5 +1,4 @@
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -55,7 +54,7 @@ public class TestParser {
 			System.out.println("-------------------");
 			System.out.println(s.getSQL());
 		}
-		assertTrue(true);
+		assertEquals(2, p.getStatementCount());
 	}
 	
 	@Test
@@ -99,7 +98,7 @@ public class TestParser {
 			System.out.println("-- #############");
 			System.out.println(s.getSQL());
 		}
-		assertTrue(true);
+		assertEquals(2, p.getStatementCount());
 	}
 	
 	@Test

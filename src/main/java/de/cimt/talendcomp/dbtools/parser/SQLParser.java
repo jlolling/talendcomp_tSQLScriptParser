@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Klasse enthält Methoden zum Zerlegen von kompletten SQL-Scripten
@@ -36,13 +38,19 @@ public final class SQLParser {
     private boolean         autoDetectPLSQL = true;
     private boolean         includeComments = true;
     private boolean 		detectBindVariables = true;
+    private Pattern fromTablePattern = null;
+    private Pattern withNamePattern1 = null;
+    private Pattern withNamePattern2 = null;
     static int maxTextStringLength = 0;
     private static final char STATEMENT_END = ';';
     private char statementEnd = STATEMENT_END;
     private static final char SCRIPT_END = '/';
     private char scriptEnd = SCRIPT_END;
     private boolean useScriptDetecting = true;
-    static String[]         plsqlKeyWords   = {
+	private static final String fromTableRegex = "\\s{1,}(from|join)[\\s]{1,}([a-z_]{1}[a-z0-9_\\.]*)";
+	private static final String withNameRegex1 = "with\\s{1,}([a-z_]{1}[a-z_0-9]*)\\s{1,}as\\s*\\(";
+	private static final String withNameRegex2 = "\\)\\s*[,]\\s*([a-z_]{1}[a-z_0-9]*)\\s{1,}as\\s*\\(";
+   static String[]         plsqlKeyWords   = {
             "DECLARE",
             "CREATE OR REPLACE PROCEDURE",
             "CREATE OR REPLACE FUNCTION",
@@ -63,7 +71,11 @@ public final class SQLParser {
     	}
     }
 
-    public SQLParser() {}
+    public SQLParser() {
+    	fromTablePattern = Pattern.compile(fromTableRegex, Pattern.CASE_INSENSITIVE);
+    	withNamePattern1 = Pattern.compile(withNameRegex1, Pattern.CASE_INSENSITIVE);
+    	withNamePattern2 = Pattern.compile(withNameRegex2, Pattern.CASE_INSENSITIVE);
+    }
 
     public SQLParser(String text) {
         parseScript(text);
@@ -168,10 +180,6 @@ public final class SQLParser {
                             // Inline-Kommentar gefunden !
                             inLineComment = true;
                             i++; // Zeiger ein weiter da zwei Zeichen analysiert wurden
-                            if (includeComments) {
-                                temp.append(c);
-                                temp.append(c1);
-                            }
                         } else if (c == statementEnd || (c0 == '\n' && c == scriptEnd && Character.isWhitespace(c1))) { // Ende des Statements gefunden ?
                         	if (c == statementEnd) {
                         		if (plsql) {
@@ -251,10 +259,6 @@ public final class SQLParser {
                             if (c == '\n') {
                                 inLineComment = false;
                                 temp.append(c);
-                            } else {
-                            	if (includeComments) {
-                                    temp.append(c);
-                            	}
                             }
                         } else if (inBlockComment) {
                             if ((c == '*') && (c1 == '/')) {
@@ -1330,6 +1334,64 @@ public final class SQLParser {
 
 	public void setDetectBindVariables(boolean detectBindVariables) {
 		this.detectBindVariables = detectBindVariables;
+	}
+
+	public List<String> findFromTables(String code) {
+		List<String> withNames = findWithNames(code);
+		List<String> tables = new ArrayList<>();
+		if (code != null) {
+			Matcher matcher = fromTablePattern.matcher(code);
+			while (matcher.find()) {
+        		for (int i = 1; i <= matcher.groupCount(); i++) {
+        			int start = matcher.start(i);
+        			int end = matcher.end(i);
+                    if (start < end) {
+                    	String table = matcher.group(i);
+                    	if (table != null && 
+                    			table.trim().isEmpty() == false && 
+                    			"from".equalsIgnoreCase(table) == false && 
+                            	"lateral".equalsIgnoreCase(table) == false && 
+                    			"join".equalsIgnoreCase(table) == false) {
+                    		if (withNames.contains(table) == false && tables.contains(table) == false) {
+                        		tables.add(table);
+                    		}
+                    	}
+                    }
+        		}
+			}
+		}
+		return tables;
+	}
+	
+	public List<String> findWithNames(String sql) {
+		List<String> withNames = new ArrayList<>();
+		Matcher matcher = withNamePattern1.matcher(sql);
+		while (matcher.find()) {
+    		for (int i = 1; i <= matcher.groupCount(); i++) {
+    			int start = matcher.start(i);
+    			int end = matcher.end(i);
+                if (start < end) {
+                	String table = matcher.group(i);
+                	if (table != null && table.trim().isEmpty() == false) {
+                		withNames.add(table);
+                	}
+                }
+    		}
+		}
+		matcher = withNamePattern2.matcher(sql);
+		while (matcher.find()) {
+    		for (int i = 1; i <= matcher.groupCount(); i++) {
+    			int start = matcher.start(i);
+    			int end = matcher.end(i);
+                if (start < end) {
+                	String table = matcher.group(i);
+                	if (table != null && table.trim().isEmpty() == false) {
+                		withNames.add(table);
+                	}
+                }
+    		}
+		}
+		return withNames;
 	}
 
 }
