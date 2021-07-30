@@ -7,11 +7,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.Statement;
+//import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+//import net.sf.jsqlparser.statement.Statement;
 
 public class TestParseSQL {
 
+/*
 	@Test
 	public void testSelectsStrict() throws Exception {
 		System.out.println("################# testSelectsStrict");
@@ -31,7 +32,7 @@ public class TestParseSQL {
 		Statement stmt = CCJSqlParserUtil.parse(sql1);
 		assertTrue(stmt != null);
 	}
-
+*/
 	@Test
 	public void testSelectsFromMethod() throws Exception {
 		System.out.println("################# testSelectsFromMethod");
