@@ -10,6 +10,8 @@ Very simple example:
 
 ![Demo job design](https://github.com/jlolling/talendcomp_tSQLScriptParser/blob/master/doc/mysql_example.png)
 
+Example with prepared statements (setup the parameter value happen in the tPostgresRow component):
+
 ![Demo job design](https://github.com/jlolling/talendcomp_tSQLScriptParser/blob/master/doc/tSQLScriptParser_example_with_prepared_statements.png)
 
 Better design with a separate connection component and a proper transaction handling:
