@@ -31,7 +31,7 @@
     boolean detectBlocks = "true".equals(ElementParameterParser.getValue(node, "__USE_SCRIPT_DETECTING__"));
     boolean detectBindVars = "true".equals(ElementParameterParser.getValue(node, "__DETECTING_BIND_VARIABLES__"));
 %>
-	de.cimt.talendcomp.dbtools.parser.SQLParser <%=cid%> = new de.cimt.talendcomp.dbtools.parser.SQLParser();
+	de.jlo.talendcomp.dbtools.parser.SQLParser <%=cid%> = new de.jlo.talendcomp.dbtools.parser.SQLParser();
 	<%=cid%>.setIncludeComments(!<%=removeComments%>);
 	<%=cid%>.setUseScriptDetecting(<%=detectBlocks%>);
 	<%=cid%>.setDetectBindVariables(<%=detectBindVars%>);
@@ -39,7 +39,7 @@
 <%  if (readFromFile) { %>
 	// read the script from file
 	java.io.File scriptfile_<%=cid%> = new java.io.File(<%=file%>);
-	String sqlscript_<%=cid%> = de.cimt.talendcomp.dbtools.parser.SQLParser.readSQLFile(scriptfile_<%=cid%>, <%=charset%>);
+	String sqlscript_<%=cid%> = de.jlo.talendcomp.dbtools.parser.SQLParser.readSQLFile(scriptfile_<%=cid%>, <%=charset%>);
 	// parse script
 	<%=cid%>.parseScript(sqlscript_<%=cid%>);
 <%  } else { %>

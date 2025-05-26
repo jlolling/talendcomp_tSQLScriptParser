@@ -1,38 +1,16 @@
-package de.cimt.talendcomp.dbtools.parser;
+package de.jlo.talendcomp.dbtools.parser;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.junit.Test;
 
-//import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-//import net.sf.jsqlparser.statement.Statement;
+import de.cimt.talendcomp.dbtools.parser.SQLParser;
+import de.cimt.talendcomp.dbtools.parser.SQLStatement;
 
 public class TestParseSQL {
 
-/*
-	@Test
-	public void testSelectsStrict() throws Exception {
-		System.out.println("################# testSelectsStrict");
-		String sql1 = "with ws1 as (\n"
-				    + "    select schema_c.function1(x) as alias_x from schema_c.table_c\n"
-				    + "), \n"
-				    + "ws2 as (\n"
-				    + "    select y from schema_d.table_d\n"
-				    + ") \n"
-				    + "select \n"
-				    + "    a as alias_a, \n"
-				    + "    b as alias_b, \n"
-				    + "    (select c from schema_e.table_e) as alias_c \n"
-				    + "from schema_a.table_1 ta \n"
-				    + "join schema_b.table_b tb using(c) \n"
-				    + "join ws1 using(c)";
-		Statement stmt = CCJSqlParserUtil.parse(sql1);
-		assertTrue(stmt != null);
-	}
-*/
 	@Test
 	public void testSelectsFromMethod() throws Exception {
 		System.out.println("################# testSelectsFromMethod");
@@ -158,21 +136,6 @@ public class TestParseSQL {
 		sql.append("end;\n");
 		sql.append("/");
 		String script = sql.toString();
-//		String script = "/* comment 1 */\n" +
-//				"-- line comment 1a\n" +
-//				"select * /* comment2 */ from table; \r\n" +
-//				
-//				"/* comment 3 */\n\r" +
-//				"update table;  -- comment4\n" +
-//				
-//				"-- line comment 5\n" +
-//				"statement 3;\n"+
-//				
-//				"-- line comment 5b\n" +
-//				";\n"+
-//
-//				"\n-- comment 6\n";
-//		String script = "begin -- comment\nstat1; stat2;end;\n/" ;
 		SQLParser p = new SQLParser();
 		p.setIncludeComments(true);
 		p.parseScript(script);
