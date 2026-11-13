@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.cimt.talendcomp.dbtools.parser;
+package de.jlo.talendcomp.dbtools.parser;
 
 import java.io.BufferedReader;
 import java.io.File;

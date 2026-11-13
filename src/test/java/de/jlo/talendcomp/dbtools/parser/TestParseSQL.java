@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import de.cimt.talendcomp.dbtools.parser.SQLParser;
-import de.cimt.talendcomp.dbtools.parser.SQLStatement;
+import de.jlo.talendcomp.dbtools.parser.SQLParser;
+import de.jlo.talendcomp.dbtools.parser.SQLStatement;
 
 public class TestParseSQL {
 
